@@ -4,7 +4,7 @@
 // - protoc             v5.26.1
 // source: reservista/authentication/auth.proto
 
-package grpc_auth
+package proto_auth
 
 import (
 	context "context"
