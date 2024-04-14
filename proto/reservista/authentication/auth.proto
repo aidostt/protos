@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "aidostt.reservista.v1;reservista";
+option go_package = "aidostt.reservista.v1;grpc_auth";
 
 // Auth is service for managing permissions and roles.
 service Auth {

@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v5.26.1
-// source: reservista/auth.proto
+// source: reservista/authentication/auth.proto
 
-package auth
+package grpc_auth
 
 import (
 	context "context"
@@ -217,5 +217,5 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "reservista/auth.proto",
+	Metadata: "reservista/authentication/auth.proto",
 }
