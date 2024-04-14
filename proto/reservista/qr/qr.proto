@@ -29,13 +29,13 @@ message ScanRequest {
 
 message ScanResponse {
   //User Info
-  string name = 1;
-  string surname = 2;
-  string phone = 3;
-  string email = 4;
+  string userName = 1;
+  string userSurname = 2;
+  string userPhone = 3;
+  string userEmail = 4;
   //Reservation Info
   string restaurantName = 5;
   string restaurantAddress = 6;
-  string tableID = 7;
+  int32  tableID = 7;
   string reservationTime = 8;
 }
