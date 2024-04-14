@@ -4,7 +4,7 @@
 // - protoc             v5.26.1
 // source: reservista/user/user.proto
 
-package user
+package proto_user
 
 import (
 	context "context"
