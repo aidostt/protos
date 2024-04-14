@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v5.26.1
-// source: reservista/reservista.proto
+// source: reservista/auth.proto
 
-package reservista
+package grpc_auth
 
 import (
 	context "context"
@@ -30,8 +30,6 @@ type AuthClient interface {
 	Refresh(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
-	// SignOut logs out a user and returns an status.
-	SignOut(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
 }
 
 type authClient struct {
@@ -78,15 +76,6 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 	return out, nil
 }
 
-func (c *authClient) SignOut(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*SignOutResponse, error) {
-	out := new(SignOutResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/SignOut", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
@@ -99,8 +88,6 @@ type AuthServer interface {
 	Refresh(context.Context, *TokenRequest) (*TokenResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
-	// SignOut logs out a user and returns an status.
-	SignOut(context.Context, *TokenRequest) (*SignOutResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -119,9 +106,6 @@ func (UnimplementedAuthServer) Refresh(context.Context, *TokenRequest) (*TokenRe
 }
 func (UnimplementedAuthServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAdmin not implemented")
-}
-func (UnimplementedAuthServer) SignOut(context.Context, *TokenRequest) (*SignOutResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -208,24 +192,6 @@ func _Auth_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_SignOut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TokenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServer).SignOut(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/auth.Auth/SignOut",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).SignOut(ctx, req.(*TokenRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -249,11 +215,7 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "IsAdmin",
 			Handler:    _Auth_IsAdmin_Handler,
 		},
-		{
-			MethodName: "SignOut",
-			Handler:    _Auth_SignOut_Handler,
-		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "reservista/reservista.proto",
+	Metadata: "reservista/auth.proto",
 }
