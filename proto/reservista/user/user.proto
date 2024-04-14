@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "aidostt.reservista.user.v1;user";
+
+// Auth is service for managing permissions and roles.
+service User {
+  // GetByID finds and returns user using id.
+  rpc GetByID (GetRequest) returns (UserResponse);
+
+  // GetByEmail finds and returns user using id.
+  rpc GetByEmail (GetRequest) returns (UserResponse);
+
+  // Update user information in db.
+  rpc Update (UpdateRequest) returns (StatusResponse);
+
+  // Delete removes user from db.
+  rpc Delete (GetRequest) returns (StatusResponse);
+
+}
+
+message GetRequest {
+  string user_id = 1;
+  string email = 2;
+}
+
+message UserResponse {
+  string name = 1;
+  string surname = 2;
+  string phone = 3;
+  string email = 4;
+}
+
+message UpdateRequest {
+  string name = 1;
+  string surname = 2;
+  string phone = 3;
+  string email = 4;
+  string password = 6;
+}
+
+message StatusResponse {
+  bool status = 1;
+}
