@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package mailer;
+
+option go_package = "aidostt.reservista.proto_mailer.v1;proto_mailer";
+
+// Auth is service for managing permissions and roles.
+service Mailer {
+  rpc SendWelcome (EmailInput) returns (StatusResponse);
+  rpc SendQR (EmailInput) returns (StatusResponse);
+  rpc SendAuthCode (EmailInput) returns (StatusResponse);
+  rpc SendReminder (EmailInput) returns (StatusResponse);
+  rpc SendAdvert (EmailInput) returns (StatusResponse);
+  rpc SendResetCode (EmailInput) returns (StatusResponse);
+}
+
+message EmailInput {
+  string email = 1;
+}
+
+message StatusResponse {
+  bool status = 1;
+}
