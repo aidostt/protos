@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package restaurant;
+
+option go_package = "aidostt.reservista.proto_restaurant.v1;proto_restaurant";
+
+
+service Restaurant {
+  rpc AddRestaurant (RestaurantObject) returns (StatusResponse);
+  rpc GetAllRestaurants (Empty) returns (RestaurantListResponse);
+  rpc GetRestaurant (IDRequest) returns (RestaurantObject);
+  rpc UpdateRestById (RestaurantObject) returns (StatusResponse);
+  rpc DeleteRestaurantById (IDRequest) returns (StatusResponse);
+}
+
+message Empty {}
+
+message RestaurantObject {
+  string id = 1;
+  string name = 2;
+  string address = 3;
+  string contact = 4;
+}
+
+message IDRequest {
+  string id = 1;
+}
+
+message StatusResponse {
+  bool status = 1;
+}
+
+message RestaurantListResponse {
+  repeated RestaurantObject restaurants = 1;
+}

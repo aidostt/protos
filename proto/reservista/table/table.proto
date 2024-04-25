@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package table;
+
+option go_package = "aidostt.reservista.proto_table.v1;proto_table";
+
+
+service Table {
+  rpc GetAllTables (Empty) returns (TableListResponse);
+  rpc GetTablesByRestId (IDRequest) returns (TableListResponse);
+  rpc GetTable (IDRequest) returns (TableObject);
+  rpc AddTable (TableObject) returns (StatusResponse);
+  rpc UpdateTableById (TableObject) returns (StatusResponse);
+  rpc DeleteTableById (IDRequest) returns (StatusResponse);
+  rpc GetAvailableTables (IDRequest) returns (TableListResponse);
+  rpc GetReservedTables (IDRequest) returns (TableListResponse);
+}
+
+message Empty {}
+
+
+message TableObject {
+  string id = 1;
+  int32 NumberOfSeats = 2;
+  bool IsReserved = 3;
+  int32 TableNumber = 4;
+  RestaurantObject restaurant = 5;
+}
+
+message RestaurantObject {
+  string id = 1;
+  string name = 2;
+  string address = 3;
+  string contact = 4;
+}
+
+message IDRequest {
+  string id = 1;
+}
+
+message StatusResponse {
+  bool status = 1;
+}
+
+message TableListResponse {
+  repeated TableObject tables = 1;
+}
