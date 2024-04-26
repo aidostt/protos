@@ -26,7 +26,7 @@ type TableClient interface {
 	GetTablesByRestId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error)
 	GetTable(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableObject, error)
 	AddTable(ctx context.Context, in *AddTableRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	UpdateTableById(ctx context.Context, in *TableObject, opts ...grpc.CallOption) (*StatusResponse, error)
+	UpdateTableById(ctx context.Context, in *UpdateTableRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteTableById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	GetAvailableTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error)
 	GetReservedTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error)
@@ -76,7 +76,7 @@ func (c *tableClient) AddTable(ctx context.Context, in *AddTableRequest, opts ..
 	return out, nil
 }
 
-func (c *tableClient) UpdateTableById(ctx context.Context, in *TableObject, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *tableClient) UpdateTableById(ctx context.Context, in *UpdateTableRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/table.Table/UpdateTableById", in, out, opts...)
 	if err != nil {
@@ -120,7 +120,7 @@ type TableServer interface {
 	GetTablesByRestId(context.Context, *IDRequest) (*TableListResponse, error)
 	GetTable(context.Context, *IDRequest) (*TableObject, error)
 	AddTable(context.Context, *AddTableRequest) (*StatusResponse, error)
-	UpdateTableById(context.Context, *TableObject) (*StatusResponse, error)
+	UpdateTableById(context.Context, *UpdateTableRequest) (*StatusResponse, error)
 	DeleteTableById(context.Context, *IDRequest) (*StatusResponse, error)
 	GetAvailableTables(context.Context, *IDRequest) (*TableListResponse, error)
 	GetReservedTables(context.Context, *IDRequest) (*TableListResponse, error)
@@ -143,7 +143,7 @@ func (UnimplementedTableServer) GetTable(context.Context, *IDRequest) (*TableObj
 func (UnimplementedTableServer) AddTable(context.Context, *AddTableRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTable not implemented")
 }
-func (UnimplementedTableServer) UpdateTableById(context.Context, *TableObject) (*StatusResponse, error) {
+func (UnimplementedTableServer) UpdateTableById(context.Context, *UpdateTableRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTableById not implemented")
 }
 func (UnimplementedTableServer) DeleteTableById(context.Context, *IDRequest) (*StatusResponse, error) {
@@ -241,7 +241,7 @@ func _Table_AddTable_Handler(srv interface{}, ctx context.Context, dec func(inte
 }
 
 func _Table_UpdateTableById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TableObject)
+	in := new(UpdateTableRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -253,7 +253,7 @@ func _Table_UpdateTableById_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/table.Table/UpdateTableById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TableServer).UpdateTableById(ctx, req.(*TableObject))
+		return srv.(TableServer).UpdateTableById(ctx, req.(*UpdateTableRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
