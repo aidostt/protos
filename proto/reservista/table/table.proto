@@ -10,7 +10,7 @@ service Table {
   rpc GetTablesByRestId (IDRequest) returns (TableListResponse);
   rpc GetTable (IDRequest) returns (TableObject);
   rpc AddTable (AddTableRequest) returns (StatusResponse);
-  rpc UpdateTableById (TableObject) returns (StatusResponse);
+  rpc UpdateTableById (UpdateTableRequest) returns (StatusResponse);
   rpc DeleteTableById (IDRequest) returns (StatusResponse);
   rpc GetAvailableTables (IDRequest) returns (TableListResponse);
   rpc GetReservedTables (IDRequest) returns (TableListResponse);
