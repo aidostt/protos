@@ -10,7 +10,7 @@ service Table {
   rpc GetTablesByRestId (IDRequest) returns (TableListResponse);
   rpc GetTable (IDRequest) returns (TableObject);
   rpc AddTable (AddTableRequest) returns (StatusResponse);
-  rpc UpdateTableById (AddTableRequest) returns (StatusResponse);
+  rpc UpdateTableById (TableObject) returns (StatusResponse);
   rpc DeleteTableById (IDRequest) returns (StatusResponse);
   rpc GetAvailableTables (IDRequest) returns (TableListResponse);
   rpc GetReservedTables (IDRequest) returns (TableListResponse);
@@ -25,6 +25,7 @@ message AddTableRequest {
   int32 TableNumber = 3;
   string restaurantID = 4;
 }
+
 
 message TableObject {
   string id = 1;
