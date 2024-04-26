@@ -9,8 +9,8 @@ service Table {
   rpc GetAllTables (Empty) returns (TableListResponse);
   rpc GetTablesByRestId (IDRequest) returns (TableListResponse);
   rpc GetTable (IDRequest) returns (TableObject);
-  rpc AddTable (TableObject) returns (StatusResponse);
-  rpc UpdateTableById (TableObject) returns (StatusResponse);
+  rpc AddTable (AddTableRequest) returns (StatusResponse);
+  rpc UpdateTableById (AddTableRequest) returns (StatusResponse);
   rpc DeleteTableById (IDRequest) returns (StatusResponse);
   rpc GetAvailableTables (IDRequest) returns (TableListResponse);
   rpc GetReservedTables (IDRequest) returns (TableListResponse);
@@ -18,6 +18,13 @@ service Table {
 
 message Empty {}
 
+
+message AddTableRequest {
+  int32 NumberOfSeats = 1;
+  bool IsReserved = 2;
+  int32 TableNumber = 3;
+  string restaurantID = 4;
+}
 
 message TableObject {
   string id = 1;

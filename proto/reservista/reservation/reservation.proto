@@ -48,6 +48,12 @@ message ReservationSQLRequest {
   string reservationTime = 3;
 }
 
+message UpdateReservationRequest {
+  string reservationID = 1;
+  string tableID = 2;
+  string reservationTime = 3;
+}
+
 
 message StatusResponse {
   bool status = 1;
