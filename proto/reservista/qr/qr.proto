@@ -23,7 +23,8 @@ message GenerateResponse {
 }
 
 message ScanRequest {
-   string ReservationID = 1;
+  string UserID = 1;
+   string ReservationID = 2;
 }
 
 message ScanResponse {
