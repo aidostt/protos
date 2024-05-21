@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
 	// SignUp registers a new user.
-	SignUp(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*TokenResponse, error)
+	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// SignIn logs in a user and returns an auth tokens.
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// Refresh refreshes token pair of user and returns back new ones.
@@ -40,7 +40,7 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) SignUp(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*TokenResponse, error) {
+func (c *authClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*TokenResponse, error) {
 	out := new(TokenResponse)
 	err := c.cc.Invoke(ctx, "/auth.Auth/SignUp", in, out, opts...)
 	if err != nil {
@@ -81,7 +81,7 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 // for forward compatibility
 type AuthServer interface {
 	// SignUp registers a new user.
-	SignUp(context.Context, *RegisterRequest) (*TokenResponse, error)
+	SignUp(context.Context, *SignUpRequest) (*TokenResponse, error)
 	// SignIn logs in a user and returns an auth tokens.
 	SignIn(context.Context, *SignInRequest) (*TokenResponse, error)
 	// Refresh refreshes token pair of user and returns back new ones.
@@ -95,7 +95,7 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) SignUp(context.Context, *RegisterRequest) (*TokenResponse, error) {
+func (UnimplementedAuthServer) SignUp(context.Context, *SignUpRequest) (*TokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
 }
 func (UnimplementedAuthServer) SignIn(context.Context, *SignInRequest) (*TokenResponse, error) {
@@ -121,7 +121,7 @@ func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
 }
 
 func _Auth_SignUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
+	in := new(SignUpRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func _Auth_SignUp_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/auth.Auth/SignUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).SignUp(ctx, req.(*RegisterRequest))
+		return srv.(AuthServer).SignUp(ctx, req.(*SignUpRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

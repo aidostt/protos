@@ -36,6 +36,7 @@ message ScanResponse {
   //Reservation Info
   string restaurantName = 5;
   string restaurantAddress = 6;
-  int32  tableID = 7;
-  string reservationTime = 8;
+  string restaurantContact = 7;
+  int32  tableID = 8;
+  string reservationTime = 9;
 }

@@ -9,6 +9,7 @@ service Reservation {
   rpc GetReservation (IDRequest) returns (ReservationObject);
   rpc DeleteReservationById (IDRequest) returns (StatusResponse);
   rpc GetAllReservationByUserId (IDRequest) returns (ReservationListResponse);
+  rpc GetAllReservationByRestaurantId(IDRequest) returns (ReservationListResponse);
   rpc UpdateReservation (ReservationSQLRequest) returns (StatusResponse);
   rpc GetRestaurantByReservationId (IDRequest) returns (RestaurantObject);
   rpc GetTableByReservationId (IDRequest) returns (TableObject);
