@@ -18,6 +18,8 @@ service User {
   // Delete removes user from db.
   rpc Delete (GetRequest) returns (StatusResponse);
 
+  // Activate user on the site
+  rpc Activate(ActivateRequest) returns (StatusResponse);
 }
 
 message GetRequest {
@@ -30,6 +32,8 @@ message UserResponse {
   string surname = 2;
   string phone = 3;
   string email = 4;
+  string activated = 5;
+  Roles roles = 6;
 }
 
 message UpdateRequest {
@@ -43,4 +47,12 @@ message UpdateRequest {
 
 message StatusResponse {
   bool status = 1;
+}
+
+message ActivateRequest {
+  bool activate = 1;
+}
+
+message Roles {
+  repeated string role = 1;
 }

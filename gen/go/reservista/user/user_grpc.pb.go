@@ -30,6 +30,8 @@ type UserClient interface {
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Delete removes user from db.
 	Delete(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Activate user on the site
+	Activate(ctx context.Context, in *ActivateRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type userClient struct {
@@ -76,6 +78,15 @@ func (c *userClient) Delete(ctx context.Context, in *GetRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *userClient) Activate(ctx context.Context, in *ActivateRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/auth.User/Activate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -88,6 +99,8 @@ type UserServer interface {
 	Update(context.Context, *UpdateRequest) (*StatusResponse, error)
 	// Delete removes user from db.
 	Delete(context.Context, *GetRequest) (*StatusResponse, error)
+	// Activate user on the site
+	Activate(context.Context, *ActivateRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -106,6 +119,9 @@ func (UnimplementedUserServer) Update(context.Context, *UpdateRequest) (*StatusR
 }
 func (UnimplementedUserServer) Delete(context.Context, *GetRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedUserServer) Activate(context.Context, *ActivateRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Activate not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -192,6 +208,24 @@ func _User_Delete_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_Activate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Activate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.User/Activate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Activate(ctx, req.(*ActivateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -214,6 +248,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _User_Delete_Handler,
+		},
+		{
+			MethodName: "Activate",
+			Handler:    _User_Activate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

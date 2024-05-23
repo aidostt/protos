@@ -30,6 +30,8 @@ type AuthClient interface {
 	Refresh(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
+	// CreateSession creates new session in db for given user.
+	CreateSession(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 }
 
 type authClient struct {
@@ -76,6 +78,15 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 	return out, nil
 }
 
+func (c *authClient) CreateSession(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*TokenResponse, error) {
+	out := new(TokenResponse)
+	err := c.cc.Invoke(ctx, "/auth.Auth/CreateSession", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
@@ -88,6 +99,8 @@ type AuthServer interface {
 	Refresh(context.Context, *TokenRequest) (*TokenResponse, error)
 	// IsAdmin checks whether a user is an admin.
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
+	// CreateSession creates new session in db for given user.
+	CreateSession(context.Context, *CreateRequest) (*TokenResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -106,6 +119,9 @@ func (UnimplementedAuthServer) Refresh(context.Context, *TokenRequest) (*TokenRe
 }
 func (UnimplementedAuthServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAdmin not implemented")
+}
+func (UnimplementedAuthServer) CreateSession(context.Context, *CreateRequest) (*TokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSession not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -192,6 +208,24 @@ func _Auth_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).CreateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.Auth/CreateSession",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).CreateSession(ctx, req.(*CreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -214,6 +248,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsAdmin",
 			Handler:    _Auth_IsAdmin_Handler,
+		},
+		{
+			MethodName: "CreateSession",
+			Handler:    _Auth_CreateSession_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

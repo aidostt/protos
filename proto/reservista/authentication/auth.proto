@@ -18,7 +18,13 @@ service Auth {
   // IsAdmin checks whether a user is an admin.
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
 
+  // CreateSession creates new session in db for given user.
+  rpc CreateSession (CreateRequest) returns (TokenResponse);
+}
 
+message CreateRequest {
+  string id = 1;
+  Roles roles = 2;
 }
 
 message IsAdminRequest {
@@ -55,4 +61,9 @@ message SignInRequest {
   string email = 1;     // Email of the user to login.
   string password = 2;  // Password of the user to login.
   int32 app_id = 3;     // ID of the app to login to.
+}
+
+
+message Roles {
+  repeated string role = 1;
 }
