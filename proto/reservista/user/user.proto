@@ -32,7 +32,7 @@ message UserResponse {
   string surname = 2;
   string phone = 3;
   string email = 4;
-  string activated = 5;
+  bool activated = 5;
   Roles roles = 6;
 }
 
@@ -51,6 +51,7 @@ message StatusResponse {
 
 message ActivateRequest {
   bool activate = 1;
+  string userID = 2;
 }
 
 message Roles {
