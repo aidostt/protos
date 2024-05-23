@@ -7,7 +7,7 @@ option go_package = "aidostt.reservista.proto_auth.v1;proto_auth";
 // Auth is service for managing permissions and roles.
 service Auth {
   // SignUp registers a new user.
-  rpc SignUp (SignUpRequest) returns (TokenResponse);
+  rpc SignUp (SignUpRequest) returns (ActivationToken);
 
   // SignIn logs in a user and returns an auth tokens.
   rpc SignIn (SignInRequest) returns (TokenResponse);
@@ -23,6 +23,10 @@ service Auth {
 
 message IsAdminRequest {
   string user_id = 1;    // User ID to validate.
+}
+
+message ActivationToken {
+  string token = 1;      // Activation token.
 }
 
 message IsAdminResponse {

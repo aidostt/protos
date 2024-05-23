@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
 	// SignUp registers a new user.
-	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*TokenResponse, error)
+	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*ActivationToken, error)
 	// SignIn logs in a user and returns an auth tokens.
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// Refresh refreshes token pair of user and returns back new ones.
@@ -40,8 +40,8 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*TokenResponse, error) {
-	out := new(TokenResponse)
+func (c *authClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*ActivationToken, error) {
+	out := new(ActivationToken)
 	err := c.cc.Invoke(ctx, "/auth.Auth/SignUp", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 // for forward compatibility
 type AuthServer interface {
 	// SignUp registers a new user.
-	SignUp(context.Context, *SignUpRequest) (*TokenResponse, error)
+	SignUp(context.Context, *SignUpRequest) (*ActivationToken, error)
 	// SignIn logs in a user and returns an auth tokens.
 	SignIn(context.Context, *SignInRequest) (*TokenResponse, error)
 	// Refresh refreshes token pair of user and returns back new ones.
@@ -95,7 +95,7 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) SignUp(context.Context, *SignUpRequest) (*TokenResponse, error) {
+func (UnimplementedAuthServer) SignUp(context.Context, *SignUpRequest) (*ActivationToken, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
 }
 func (UnimplementedAuthServer) SignIn(context.Context, *SignInRequest) (*TokenResponse, error) {
