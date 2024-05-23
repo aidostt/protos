@@ -24,7 +24,7 @@ service Auth {
 
 message CreateRequest {
   string id = 1;
-  Roles roles = 2;
+  repeated string roles = 2;
 }
 
 message IsAdminRequest {

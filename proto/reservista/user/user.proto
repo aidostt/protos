@@ -33,7 +33,7 @@ message UserResponse {
   string phone = 3;
   string email = 4;
   bool activated = 5;
-  Roles roles = 6;
+  repeated string roles = 6;
 }
 
 message UpdateRequest {
@@ -52,8 +52,4 @@ message StatusResponse {
 message ActivateRequest {
   bool activate = 1;
   string userID = 2;
-}
-
-message Roles {
-  repeated string role = 1;
 }
