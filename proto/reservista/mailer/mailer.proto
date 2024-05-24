@@ -6,8 +6,8 @@ option go_package = "aidostt.reservista.proto_mailer.v1;proto_mailer";
 
 // Auth is service for managing permissions and roles.
 service Mailer {
-  rpc SendWelcome (EmailInput) returns (StatusResponse);
-  rpc SendQR (EmailInput) returns (StatusResponse);
+  rpc SendWelcome (ContentInput) returns (StatusResponse);
+  rpc SendQR (ContentInput) returns (StatusResponse);
   rpc SendAuthCode (EmailInput) returns (StatusResponse);
   rpc SendReminder (EmailInput) returns (StatusResponse);
   rpc SendAdvert (EmailInput) returns (StatusResponse);
@@ -16,6 +16,11 @@ service Mailer {
 
 message EmailInput {
   string email = 1;
+}
+
+message ContentInput {
+  string email = 1;
+  string content = 2;
 }
 
 message StatusResponse {

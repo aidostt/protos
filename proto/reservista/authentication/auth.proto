@@ -32,7 +32,8 @@ message IsAdminRequest {
 }
 
 message ActivationToken {
-  string token = 1;      // Activation token.
+  string activationToken = 1;    // Activation token.
+  TokenResponse tokens = 2; // Authentication tokens
 }
 
 message IsAdminResponse {

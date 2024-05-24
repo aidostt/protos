@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MailerClient interface {
-	SendWelcome(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
-	SendQR(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
+	SendWelcome(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error)
+	SendQR(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendAuthCode(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendReminder(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendAdvert(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
@@ -38,7 +38,7 @@ func NewMailerClient(cc grpc.ClientConnInterface) MailerClient {
 	return &mailerClient{cc}
 }
 
-func (c *mailerClient) SendWelcome(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *mailerClient) SendWelcome(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/mailer.Mailer/SendWelcome", in, out, opts...)
 	if err != nil {
@@ -47,7 +47,7 @@ func (c *mailerClient) SendWelcome(ctx context.Context, in *EmailInput, opts ...
 	return out, nil
 }
 
-func (c *mailerClient) SendQR(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *mailerClient) SendQR(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/mailer.Mailer/SendQR", in, out, opts...)
 	if err != nil {
@@ -96,8 +96,8 @@ func (c *mailerClient) SendResetCode(ctx context.Context, in *EmailInput, opts .
 // All implementations must embed UnimplementedMailerServer
 // for forward compatibility
 type MailerServer interface {
-	SendWelcome(context.Context, *EmailInput) (*StatusResponse, error)
-	SendQR(context.Context, *EmailInput) (*StatusResponse, error)
+	SendWelcome(context.Context, *ContentInput) (*StatusResponse, error)
+	SendQR(context.Context, *ContentInput) (*StatusResponse, error)
 	SendAuthCode(context.Context, *EmailInput) (*StatusResponse, error)
 	SendReminder(context.Context, *EmailInput) (*StatusResponse, error)
 	SendAdvert(context.Context, *EmailInput) (*StatusResponse, error)
@@ -109,10 +109,10 @@ type MailerServer interface {
 type UnimplementedMailerServer struct {
 }
 
-func (UnimplementedMailerServer) SendWelcome(context.Context, *EmailInput) (*StatusResponse, error) {
+func (UnimplementedMailerServer) SendWelcome(context.Context, *ContentInput) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendWelcome not implemented")
 }
-func (UnimplementedMailerServer) SendQR(context.Context, *EmailInput) (*StatusResponse, error) {
+func (UnimplementedMailerServer) SendQR(context.Context, *ContentInput) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendQR not implemented")
 }
 func (UnimplementedMailerServer) SendAuthCode(context.Context, *EmailInput) (*StatusResponse, error) {
@@ -141,7 +141,7 @@ func RegisterMailerServer(s grpc.ServiceRegistrar, srv MailerServer) {
 }
 
 func _Mailer_SendWelcome_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmailInput)
+	in := new(ContentInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -153,13 +153,13 @@ func _Mailer_SendWelcome_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/mailer.Mailer/SendWelcome",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailerServer).SendWelcome(ctx, req.(*EmailInput))
+		return srv.(MailerServer).SendWelcome(ctx, req.(*ContentInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Mailer_SendQR_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmailInput)
+	in := new(ContentInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -171,7 +171,7 @@ func _Mailer_SendQR_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: "/mailer.Mailer/SendQR",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailerServer).SendQR(ctx, req.(*EmailInput))
+		return srv.(MailerServer).SendQR(ctx, req.(*ContentInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
