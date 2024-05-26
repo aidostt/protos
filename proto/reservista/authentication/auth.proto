@@ -25,6 +25,7 @@ service Auth {
 message CreateRequest {
   string id = 1;
   repeated string roles = 2;
+  bool activated = 3;
 }
 
 message IsAdminRequest {
@@ -32,7 +33,7 @@ message IsAdminRequest {
 }
 
 message ActivationToken {
-  string activationToken = 1;    // Activation token.
+  string activation_token = 1;    // Activation token.
   TokenResponse tokens = 2; // Authentication tokens
 }
 

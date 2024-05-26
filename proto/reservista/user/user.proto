@@ -20,6 +20,15 @@ service User {
 
   // Activate user on the site
   rpc Activate(ActivateRequest) returns (StatusResponse);
+
+  // Sends verification code of the user
+  rpc VerificationCode(GetRequest) returns (VerificationCodeMessage);
+}
+
+
+message VerificationCodeMessage {
+  string code = 1;    // verification code.
+  string email = 2;   // user's email.
 }
 
 message GetRequest {
@@ -43,6 +52,8 @@ message UpdateRequest {
   string phone = 4;
   string email = 5;
   string password = 6;
+  repeated string roles = 7;
+  bool activated = 8;
 }
 
 message StatusResponse {
@@ -53,3 +64,4 @@ message ActivateRequest {
   bool activate = 1;
   string userID = 2;
 }
+

@@ -32,6 +32,8 @@ type UserClient interface {
 	Delete(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	// Activate user on the site
 	Activate(ctx context.Context, in *ActivateRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// Sends verification code of the user
+	VerificationCode(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*VerificationCodeMessage, error)
 }
 
 type userClient struct {
@@ -87,6 +89,15 @@ func (c *userClient) Activate(ctx context.Context, in *ActivateRequest, opts ...
 	return out, nil
 }
 
+func (c *userClient) VerificationCode(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*VerificationCodeMessage, error) {
+	out := new(VerificationCodeMessage)
+	err := c.cc.Invoke(ctx, "/auth.User/VerificationCode", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -101,6 +112,8 @@ type UserServer interface {
 	Delete(context.Context, *GetRequest) (*StatusResponse, error)
 	// Activate user on the site
 	Activate(context.Context, *ActivateRequest) (*StatusResponse, error)
+	// Sends verification code of the user
+	VerificationCode(context.Context, *GetRequest) (*VerificationCodeMessage, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -122,6 +135,9 @@ func (UnimplementedUserServer) Delete(context.Context, *GetRequest) (*StatusResp
 }
 func (UnimplementedUserServer) Activate(context.Context, *ActivateRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Activate not implemented")
+}
+func (UnimplementedUserServer) VerificationCode(context.Context, *GetRequest) (*VerificationCodeMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerificationCode not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -226,6 +242,24 @@ func _User_Activate_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_VerificationCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).VerificationCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.User/VerificationCode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).VerificationCode(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +286,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Activate",
 			Handler:    _User_Activate_Handler,
+		},
+		{
+			MethodName: "VerificationCode",
+			Handler:    _User_VerificationCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
