@@ -30,6 +30,7 @@ type ReservationClient interface {
 	UpdateReservation(ctx context.Context, in *UpdateReservationRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	GetRestaurantByReservationId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*RestaurantObject, error)
 	GetTableByReservationId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableObject, error)
+	ConfirmReservation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type reservationClient struct {
@@ -112,6 +113,15 @@ func (c *reservationClient) GetTableByReservationId(ctx context.Context, in *IDR
 	return out, nil
 }
 
+func (c *reservationClient) ConfirmReservation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/reservation.Reservation/ConfirmReservation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ReservationServer is the server API for Reservation service.
 // All implementations must embed UnimplementedReservationServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type ReservationServer interface {
 	UpdateReservation(context.Context, *UpdateReservationRequest) (*StatusResponse, error)
 	GetRestaurantByReservationId(context.Context, *IDRequest) (*RestaurantObject, error)
 	GetTableByReservationId(context.Context, *IDRequest) (*TableObject, error)
+	ConfirmReservation(context.Context, *IDRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedReservationServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedReservationServer) GetRestaurantByReservationId(context.Conte
 }
 func (UnimplementedReservationServer) GetTableByReservationId(context.Context, *IDRequest) (*TableObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTableByReservationId not implemented")
+}
+func (UnimplementedReservationServer) ConfirmReservation(context.Context, *IDRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfirmReservation not implemented")
 }
 func (UnimplementedReservationServer) mustEmbedUnimplementedReservationServer() {}
 
@@ -312,6 +326,24 @@ func _Reservation_GetTableByReservationId_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Reservation_ConfirmReservation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServer).ConfirmReservation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/reservation.Reservation/ConfirmReservation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServer).ConfirmReservation(ctx, req.(*IDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Reservation_ServiceDesc is the grpc.ServiceDesc for Reservation service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var Reservation_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTableByReservationId",
 			Handler:    _Reservation_GetTableByReservationId_Handler,
+		},
+		{
+			MethodName: "ConfirmReservation",
+			Handler:    _Reservation_ConfirmReservation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

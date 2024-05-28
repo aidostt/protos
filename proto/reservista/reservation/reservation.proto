@@ -13,6 +13,7 @@ service Reservation {
   rpc UpdateReservation (UpdateReservationRequest) returns (StatusResponse);
   rpc GetRestaurantByReservationId (IDRequest) returns (RestaurantObject);
   rpc GetTableByReservationId (IDRequest) returns (TableObject);
+  rpc ConfirmReservation (IDRequest) returns (StatusResponse);
 }
 
 
