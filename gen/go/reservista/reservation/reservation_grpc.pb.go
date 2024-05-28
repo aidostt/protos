@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReservationClient interface {
-	MakeReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	MakeReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*IDRequest, error)
 	GetReservation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*ReservationObject, error)
 	DeleteReservationById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	GetAllReservationByUserId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*ReservationListResponse, error)
@@ -40,8 +40,8 @@ func NewReservationClient(cc grpc.ClientConnInterface) ReservationClient {
 	return &reservationClient{cc}
 }
 
-func (c *reservationClient) MakeReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
+func (c *reservationClient) MakeReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*IDRequest, error) {
+	out := new(IDRequest)
 	err := c.cc.Invoke(ctx, "/reservation.Reservation/MakeReservation", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (c *reservationClient) GetTableByReservationId(ctx context.Context, in *IDR
 // All implementations must embed UnimplementedReservationServer
 // for forward compatibility
 type ReservationServer interface {
-	MakeReservation(context.Context, *ReservationSQLRequest) (*StatusResponse, error)
+	MakeReservation(context.Context, *ReservationSQLRequest) (*IDRequest, error)
 	GetReservation(context.Context, *IDRequest) (*ReservationObject, error)
 	DeleteReservationById(context.Context, *IDRequest) (*StatusResponse, error)
 	GetAllReservationByUserId(context.Context, *IDRequest) (*ReservationListResponse, error)
@@ -131,7 +131,7 @@ type ReservationServer interface {
 type UnimplementedReservationServer struct {
 }
 
-func (UnimplementedReservationServer) MakeReservation(context.Context, *ReservationSQLRequest) (*StatusResponse, error) {
+func (UnimplementedReservationServer) MakeReservation(context.Context, *ReservationSQLRequest) (*IDRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MakeReservation not implemented")
 }
 func (UnimplementedReservationServer) GetReservation(context.Context, *IDRequest) (*ReservationObject, error) {

@@ -5,7 +5,7 @@ package reservation;
 option go_package = "aidostt.reservista.proto_reservation.v1;proto_reservation";
 
 service Reservation {
-  rpc MakeReservation (ReservationSQLRequest) returns (StatusResponse);
+  rpc MakeReservation (ReservationSQLRequest) returns (IDRequest);
   rpc GetReservation (IDRequest) returns (ReservationObject);
   rpc DeleteReservationById (IDRequest) returns (StatusResponse);
   rpc GetAllReservationByUserId (IDRequest) returns (ReservationListResponse);

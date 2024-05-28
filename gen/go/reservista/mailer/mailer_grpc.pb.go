@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type MailerClient interface {
 	SendWelcome(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendQR(ctx context.Context, in *QRInput, opts ...grpc.CallOption) (*StatusResponse, error)
-	SendAuthCode(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
+	SendAuthCode(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendReminder(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendAdvert(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
 	SendResetCode(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error)
@@ -56,7 +56,7 @@ func (c *mailerClient) SendQR(ctx context.Context, in *QRInput, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *mailerClient) SendAuthCode(ctx context.Context, in *EmailInput, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *mailerClient) SendAuthCode(ctx context.Context, in *ContentInput, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/mailer.Mailer/SendAuthCode", in, out, opts...)
 	if err != nil {
@@ -98,7 +98,7 @@ func (c *mailerClient) SendResetCode(ctx context.Context, in *EmailInput, opts .
 type MailerServer interface {
 	SendWelcome(context.Context, *ContentInput) (*StatusResponse, error)
 	SendQR(context.Context, *QRInput) (*StatusResponse, error)
-	SendAuthCode(context.Context, *EmailInput) (*StatusResponse, error)
+	SendAuthCode(context.Context, *ContentInput) (*StatusResponse, error)
 	SendReminder(context.Context, *EmailInput) (*StatusResponse, error)
 	SendAdvert(context.Context, *EmailInput) (*StatusResponse, error)
 	SendResetCode(context.Context, *EmailInput) (*StatusResponse, error)
@@ -115,7 +115,7 @@ func (UnimplementedMailerServer) SendWelcome(context.Context, *ContentInput) (*S
 func (UnimplementedMailerServer) SendQR(context.Context, *QRInput) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendQR not implemented")
 }
-func (UnimplementedMailerServer) SendAuthCode(context.Context, *EmailInput) (*StatusResponse, error) {
+func (UnimplementedMailerServer) SendAuthCode(context.Context, *ContentInput) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendAuthCode not implemented")
 }
 func (UnimplementedMailerServer) SendReminder(context.Context, *EmailInput) (*StatusResponse, error) {
@@ -177,7 +177,7 @@ func _Mailer_SendQR_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _Mailer_SendAuthCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmailInput)
+	in := new(ContentInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ func _Mailer_SendAuthCode_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/mailer.Mailer/SendAuthCode",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailerServer).SendAuthCode(ctx, req.(*EmailInput))
+		return srv.(MailerServer).SendAuthCode(ctx, req.(*ContentInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }

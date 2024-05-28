@@ -8,7 +8,7 @@ option go_package = "aidostt.reservista.proto_mailer.v1;proto_mailer";
 service Mailer {
   rpc SendWelcome (ContentInput) returns (StatusResponse);
   rpc SendQR (QRInput) returns (StatusResponse);
-  rpc SendAuthCode (EmailInput) returns (StatusResponse);
+  rpc SendAuthCode (ContentInput) returns (StatusResponse);
   rpc SendReminder (EmailInput) returns (StatusResponse);
   rpc SendAdvert (EmailInput) returns (StatusResponse);
   rpc SendResetCode (EmailInput) returns (StatusResponse);
@@ -29,9 +29,9 @@ message StatusResponse {
 
 
 message QRInput {
-  string QR = 1;
-  UserInfo user = 2;
-  RestaurantInfo restaurant = 3;
+  string userID = 1;
+  string reservationID = 2;
+  string QRUrlBase = 3;
 }
 
 message UserInfo {
