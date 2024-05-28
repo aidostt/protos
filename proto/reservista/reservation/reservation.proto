@@ -10,7 +10,7 @@ service Reservation {
   rpc DeleteReservationById (IDRequest) returns (StatusResponse);
   rpc GetAllReservationByUserId (IDRequest) returns (ReservationListResponse);
   rpc GetAllReservationByRestaurantId(IDRequest) returns (ReservationListResponse);
-  rpc UpdateReservation (ReservationSQLRequest) returns (StatusResponse);
+  rpc UpdateReservation (UpdateReservationRequest) returns (StatusResponse);
   rpc GetRestaurantByReservationId (IDRequest) returns (RestaurantObject);
   rpc GetTableByReservationId (IDRequest) returns (TableObject);
 }
@@ -21,6 +21,7 @@ message ReservationObject {
   string userID = 2;
   TableObject table = 3;
   string reservationTime = 4;
+  bool   confirmed = 5;
 }
 
 message RestaurantObject {
@@ -53,6 +54,7 @@ message UpdateReservationRequest {
   string reservationID = 1;
   string tableID = 2;
   string reservationTime = 3;
+  bool   confirmed = 4;
 }
 
 

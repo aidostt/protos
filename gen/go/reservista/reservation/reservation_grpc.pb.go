@@ -27,7 +27,7 @@ type ReservationClient interface {
 	DeleteReservationById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	GetAllReservationByUserId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*ReservationListResponse, error)
 	GetAllReservationByRestaurantId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*ReservationListResponse, error)
-	UpdateReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	UpdateReservation(ctx context.Context, in *UpdateReservationRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	GetRestaurantByReservationId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*RestaurantObject, error)
 	GetTableByReservationId(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableObject, error)
 }
@@ -85,7 +85,7 @@ func (c *reservationClient) GetAllReservationByRestaurantId(ctx context.Context,
 	return out, nil
 }
 
-func (c *reservationClient) UpdateReservation(ctx context.Context, in *ReservationSQLRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *reservationClient) UpdateReservation(ctx context.Context, in *UpdateReservationRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/reservation.Reservation/UpdateReservation", in, out, opts...)
 	if err != nil {
@@ -121,7 +121,7 @@ type ReservationServer interface {
 	DeleteReservationById(context.Context, *IDRequest) (*StatusResponse, error)
 	GetAllReservationByUserId(context.Context, *IDRequest) (*ReservationListResponse, error)
 	GetAllReservationByRestaurantId(context.Context, *IDRequest) (*ReservationListResponse, error)
-	UpdateReservation(context.Context, *ReservationSQLRequest) (*StatusResponse, error)
+	UpdateReservation(context.Context, *UpdateReservationRequest) (*StatusResponse, error)
 	GetRestaurantByReservationId(context.Context, *IDRequest) (*RestaurantObject, error)
 	GetTableByReservationId(context.Context, *IDRequest) (*TableObject, error)
 	mustEmbedUnimplementedReservationServer()
@@ -146,7 +146,7 @@ func (UnimplementedReservationServer) GetAllReservationByUserId(context.Context,
 func (UnimplementedReservationServer) GetAllReservationByRestaurantId(context.Context, *IDRequest) (*ReservationListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllReservationByRestaurantId not implemented")
 }
-func (UnimplementedReservationServer) UpdateReservation(context.Context, *ReservationSQLRequest) (*StatusResponse, error) {
+func (UnimplementedReservationServer) UpdateReservation(context.Context, *UpdateReservationRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateReservation not implemented")
 }
 func (UnimplementedReservationServer) GetRestaurantByReservationId(context.Context, *IDRequest) (*RestaurantObject, error) {
@@ -259,7 +259,7 @@ func _Reservation_GetAllReservationByRestaurantId_Handler(srv interface{}, ctx c
 }
 
 func _Reservation_UpdateReservation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReservationSQLRequest)
+	in := new(UpdateReservationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -271,7 +271,7 @@ func _Reservation_UpdateReservation_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/reservation.Reservation/UpdateReservation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReservationServer).UpdateReservation(ctx, req.(*ReservationSQLRequest))
+		return srv.(ReservationServer).UpdateReservation(ctx, req.(*UpdateReservationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
