@@ -11,6 +11,8 @@ service Restaurant {
   rpc GetRestaurant (IDRequest) returns (RestaurantObject);
   rpc UpdateRestById (RestaurantObject) returns (StatusResponse);
   rpc DeleteRestaurantById (IDRequest) returns (StatusResponse);
+  rpc UploadPhotos (UploadPhotoRequest) returns (StatusResponse);
+  rpc DeletePhoto (DeletePhotoRequest) returns (StatusResponse);
 }
 
 message Empty {}
@@ -20,6 +22,7 @@ message RestaurantObject {
   string name = 2;
   string address = 3;
   string contact = 4;
+  repeated string image_urls = 5;
 }
 
 message IDRequest {
@@ -32,4 +35,15 @@ message StatusResponse {
 
 message RestaurantListResponse {
   repeated RestaurantObject restaurants = 1;
+}
+
+
+message UploadPhotoRequest {
+  string restaurantID = 1;
+  repeated string urls = 2;
+}
+
+message DeletePhotoRequest {
+  string restaurantID = 1;
+  string url = 2;
 }

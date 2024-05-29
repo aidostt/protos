@@ -27,6 +27,8 @@ type RestaurantClient interface {
 	GetRestaurant(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*RestaurantObject, error)
 	UpdateRestById(ctx context.Context, in *RestaurantObject, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteRestaurantById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	UploadPhotos(ctx context.Context, in *UploadPhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	DeletePhoto(ctx context.Context, in *DeletePhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type restaurantClient struct {
@@ -82,6 +84,24 @@ func (c *restaurantClient) DeleteRestaurantById(ctx context.Context, in *IDReque
 	return out, nil
 }
 
+func (c *restaurantClient) UploadPhotos(ctx context.Context, in *UploadPhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/restaurant.Restaurant/UploadPhotos", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantClient) DeletePhoto(ctx context.Context, in *DeletePhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/restaurant.Restaurant/DeletePhoto", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RestaurantServer is the server API for Restaurant service.
 // All implementations must embed UnimplementedRestaurantServer
 // for forward compatibility
@@ -91,6 +111,8 @@ type RestaurantServer interface {
 	GetRestaurant(context.Context, *IDRequest) (*RestaurantObject, error)
 	UpdateRestById(context.Context, *RestaurantObject) (*StatusResponse, error)
 	DeleteRestaurantById(context.Context, *IDRequest) (*StatusResponse, error)
+	UploadPhotos(context.Context, *UploadPhotoRequest) (*StatusResponse, error)
+	DeletePhoto(context.Context, *DeletePhotoRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedRestaurantServer()
 }
 
@@ -112,6 +134,12 @@ func (UnimplementedRestaurantServer) UpdateRestById(context.Context, *Restaurant
 }
 func (UnimplementedRestaurantServer) DeleteRestaurantById(context.Context, *IDRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRestaurantById not implemented")
+}
+func (UnimplementedRestaurantServer) UploadPhotos(context.Context, *UploadPhotoRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadPhotos not implemented")
+}
+func (UnimplementedRestaurantServer) DeletePhoto(context.Context, *DeletePhotoRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePhoto not implemented")
 }
 func (UnimplementedRestaurantServer) mustEmbedUnimplementedRestaurantServer() {}
 
@@ -216,6 +244,42 @@ func _Restaurant_DeleteRestaurantById_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Restaurant_UploadPhotos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadPhotoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServer).UploadPhotos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurant.Restaurant/UploadPhotos",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServer).UploadPhotos(ctx, req.(*UploadPhotoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Restaurant_DeletePhoto_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePhotoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServer).DeletePhoto(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurant.Restaurant/DeletePhoto",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServer).DeletePhoto(ctx, req.(*DeletePhotoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Restaurant_ServiceDesc is the grpc.ServiceDesc for Restaurant service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +306,14 @@ var Restaurant_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteRestaurantById",
 			Handler:    _Restaurant_DeleteRestaurantById_Handler,
+		},
+		{
+			MethodName: "UploadPhotos",
+			Handler:    _Restaurant_UploadPhotos_Handler,
+		},
+		{
+			MethodName: "DeletePhoto",
+			Handler:    _Restaurant_DeletePhoto_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
