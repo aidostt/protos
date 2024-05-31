@@ -13,9 +13,22 @@ service Restaurant {
   rpc DeleteRestaurantById (IDRequest) returns (StatusResponse);
   rpc UploadPhotos (UploadPhotoRequest) returns (StatusResponse);
   rpc DeletePhoto (DeletePhotoRequest) returns (StatusResponse);
+  rpc SearchRestaurants (SearchRequest) returns (RestaurantListResponse);
+  rpc GetRestaurantSuggestions (SuggestionRequest) returns (RestaurantListResponse);
 }
 
 message Empty {}
+
+
+message SearchRequest {
+  string query = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message SuggestionRequest {
+  string query = 1;
+}
 
 message RestaurantObject {
   string id = 1;
