@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package reservation;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "aidostt.reservista.proto_reservation.v1;proto_reservation";
 
 service Reservation {
@@ -22,7 +24,8 @@ message ReservationObject {
   string userID = 2;
   TableObject table = 3;
   string reservationTime = 4;
-  bool   confirmed = 5;
+  google.protobuf.Timestamp reservationDate = 5;
+  bool confirmed = 6;
 }
 
 message RestaurantObject {
