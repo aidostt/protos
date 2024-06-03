@@ -29,7 +29,7 @@ type RestaurantClient interface {
 	DeleteRestaurantById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	UploadPhotos(ctx context.Context, in *UploadPhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeletePhoto(ctx context.Context, in *DeletePhotoRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	SearchRestaurants(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*RestaurantListResponse, error)
+	SearchRestaurants(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	GetRestaurantSuggestions(ctx context.Context, in *SuggestionRequest, opts ...grpc.CallOption) (*RestaurantListResponse, error)
 }
 
@@ -104,8 +104,8 @@ func (c *restaurantClient) DeletePhoto(ctx context.Context, in *DeletePhotoReque
 	return out, nil
 }
 
-func (c *restaurantClient) SearchRestaurants(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*RestaurantListResponse, error) {
-	out := new(RestaurantListResponse)
+func (c *restaurantClient) SearchRestaurants(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	out := new(SearchResponse)
 	err := c.cc.Invoke(ctx, "/restaurant.Restaurant/SearchRestaurants", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ type RestaurantServer interface {
 	DeleteRestaurantById(context.Context, *IDRequest) (*StatusResponse, error)
 	UploadPhotos(context.Context, *UploadPhotoRequest) (*StatusResponse, error)
 	DeletePhoto(context.Context, *DeletePhotoRequest) (*StatusResponse, error)
-	SearchRestaurants(context.Context, *SearchRequest) (*RestaurantListResponse, error)
+	SearchRestaurants(context.Context, *SearchRequest) (*SearchResponse, error)
 	GetRestaurantSuggestions(context.Context, *SuggestionRequest) (*RestaurantListResponse, error)
 	mustEmbedUnimplementedRestaurantServer()
 }
@@ -163,7 +163,7 @@ func (UnimplementedRestaurantServer) UploadPhotos(context.Context, *UploadPhotoR
 func (UnimplementedRestaurantServer) DeletePhoto(context.Context, *DeletePhotoRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePhoto not implemented")
 }
-func (UnimplementedRestaurantServer) SearchRestaurants(context.Context, *SearchRequest) (*RestaurantListResponse, error) {
+func (UnimplementedRestaurantServer) SearchRestaurants(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchRestaurants not implemented")
 }
 func (UnimplementedRestaurantServer) GetRestaurantSuggestions(context.Context, *SuggestionRequest) (*RestaurantListResponse, error) {
