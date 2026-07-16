@@ -23,9 +23,10 @@ message ReservationObject {
   string id = 1;
   string userID = 2;
   TableObject table = 3;
-  string reservationTime = 4;
-  google.protobuf.Timestamp reservationDate = 5;
+  reserved 4, 5; // was reservationTime (string) and reservationDate (Timestamp)
   bool confirmed = 6;
+  google.protobuf.Timestamp start_at = 7;
+  int32 party_size = 8;
 }
 
 message RestaurantObject {
@@ -51,14 +52,18 @@ message IDRequest {
 message ReservationSQLRequest {
   string userID = 1;
   string tableID = 2;
-  string reservationTime = 3;
+  reserved 3; // was reservationTime (string)
+  google.protobuf.Timestamp start_at = 4;
+  int32 party_size = 5;
 }
 
 message UpdateReservationRequest {
   string reservationID = 1;
   string tableID = 2;
-  string reservationTime = 3;
+  reserved 3; // was reservationTime (string)
   bool   confirmed = 4;
+  google.protobuf.Timestamp start_at = 5;
+  int32 party_size = 6;
 }
 
 
