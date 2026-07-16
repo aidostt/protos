@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package table;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "aidostt.reservista.proto_table.v1;proto_table";
 
 
@@ -12,8 +14,8 @@ service Table {
   rpc AddTable (AddTableRequest) returns (StatusResponse);
   rpc UpdateTableById (UpdateTableRequest) returns (StatusResponse);
   rpc DeleteTableById (IDRequest) returns (StatusResponse);
-  rpc GetAvailableTables (IDRequest) returns (TableListResponse);
-  rpc GetReservedTables (IDRequest) returns (TableListResponse);
+  rpc GetAvailableTables (AvailabilityRequest) returns (TableListResponse);
+  rpc GetReservedTables (AvailabilityRequest) returns (TableListResponse);
 }
 
 message Empty {}
@@ -51,6 +53,14 @@ message RestaurantObject {
 
 message IDRequest {
   string id = 1;
+}
+
+// AvailabilityRequest asks for the tables of a restaurant that are free (or
+// taken) for a booking starting at start_at. The slot length is the
+// restaurant's turn duration, applied server-side.
+message AvailabilityRequest {
+  string restaurant_id = 1;
+  google.protobuf.Timestamp start_at = 2;
 }
 
 message StatusResponse {

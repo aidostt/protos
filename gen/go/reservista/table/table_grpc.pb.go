@@ -28,8 +28,8 @@ type TableClient interface {
 	AddTable(ctx context.Context, in *AddTableRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	UpdateTableById(ctx context.Context, in *UpdateTableRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	DeleteTableById(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	GetAvailableTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error)
-	GetReservedTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error)
+	GetAvailableTables(ctx context.Context, in *AvailabilityRequest, opts ...grpc.CallOption) (*TableListResponse, error)
+	GetReservedTables(ctx context.Context, in *AvailabilityRequest, opts ...grpc.CallOption) (*TableListResponse, error)
 }
 
 type tableClient struct {
@@ -94,7 +94,7 @@ func (c *tableClient) DeleteTableById(ctx context.Context, in *IDRequest, opts .
 	return out, nil
 }
 
-func (c *tableClient) GetAvailableTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error) {
+func (c *tableClient) GetAvailableTables(ctx context.Context, in *AvailabilityRequest, opts ...grpc.CallOption) (*TableListResponse, error) {
 	out := new(TableListResponse)
 	err := c.cc.Invoke(ctx, "/table.Table/GetAvailableTables", in, out, opts...)
 	if err != nil {
@@ -103,7 +103,7 @@ func (c *tableClient) GetAvailableTables(ctx context.Context, in *IDRequest, opt
 	return out, nil
 }
 
-func (c *tableClient) GetReservedTables(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*TableListResponse, error) {
+func (c *tableClient) GetReservedTables(ctx context.Context, in *AvailabilityRequest, opts ...grpc.CallOption) (*TableListResponse, error) {
 	out := new(TableListResponse)
 	err := c.cc.Invoke(ctx, "/table.Table/GetReservedTables", in, out, opts...)
 	if err != nil {
@@ -122,8 +122,8 @@ type TableServer interface {
 	AddTable(context.Context, *AddTableRequest) (*StatusResponse, error)
 	UpdateTableById(context.Context, *UpdateTableRequest) (*StatusResponse, error)
 	DeleteTableById(context.Context, *IDRequest) (*StatusResponse, error)
-	GetAvailableTables(context.Context, *IDRequest) (*TableListResponse, error)
-	GetReservedTables(context.Context, *IDRequest) (*TableListResponse, error)
+	GetAvailableTables(context.Context, *AvailabilityRequest) (*TableListResponse, error)
+	GetReservedTables(context.Context, *AvailabilityRequest) (*TableListResponse, error)
 	mustEmbedUnimplementedTableServer()
 }
 
@@ -149,10 +149,10 @@ func (UnimplementedTableServer) UpdateTableById(context.Context, *UpdateTableReq
 func (UnimplementedTableServer) DeleteTableById(context.Context, *IDRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTableById not implemented")
 }
-func (UnimplementedTableServer) GetAvailableTables(context.Context, *IDRequest) (*TableListResponse, error) {
+func (UnimplementedTableServer) GetAvailableTables(context.Context, *AvailabilityRequest) (*TableListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableTables not implemented")
 }
-func (UnimplementedTableServer) GetReservedTables(context.Context, *IDRequest) (*TableListResponse, error) {
+func (UnimplementedTableServer) GetReservedTables(context.Context, *AvailabilityRequest) (*TableListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReservedTables not implemented")
 }
 func (UnimplementedTableServer) mustEmbedUnimplementedTableServer() {}
@@ -277,7 +277,7 @@ func _Table_DeleteTableById_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _Table_GetAvailableTables_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(AvailabilityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -289,13 +289,13 @@ func _Table_GetAvailableTables_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/table.Table/GetAvailableTables",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TableServer).GetAvailableTables(ctx, req.(*IDRequest))
+		return srv.(TableServer).GetAvailableTables(ctx, req.(*AvailabilityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Table_GetReservedTables_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(AvailabilityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -307,7 +307,7 @@ func _Table_GetReservedTables_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/table.Table/GetReservedTables",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TableServer).GetReservedTables(ctx, req.(*IDRequest))
+		return srv.(TableServer).GetReservedTables(ctx, req.(*AvailabilityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
